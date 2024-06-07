@@ -9,35 +9,47 @@ import com.example.repository.AdministratorRepository;
 
 /**
  * 管理者情報を操作するサービス.
- * 
- * @author igamasayuki
  *
+ * @author igamasayuki
  */
 @Service
 @Transactional
 public class AdministratorService {
 
-	@Autowired
-	private AdministratorRepository administratorRepository;
+    @Autowired
+    private AdministratorRepository administratorRepository;
+
+    /**
+     * 管理者情報を登録します.
+     *
+     * @param administrator 管理者情報
+     */
+    public void insert(Administrator administrator) {
+        administratorRepository.insert(administrator);
+    }
+
+    /**
+     * ログインをします.
+     *
+     * @param mailAddress メールアドレス
+     * @param password    パスワード
+     * @return 管理者情報 存在しない場合はnullが返ります
+     */
+    public Administrator login(String mailAddress, String password) {
+        Administrator administrator = administratorRepository.findByMailAddressAndPassward(mailAddress, password);
+        return administrator;
+    }
 
 	/**
-	 * 管理者情報を登録します.
-	 * 
-	 * @param administrator 管理者情報
+	 *	メールアドレスが既に存在するかを判定します.
+	 *
+	 * @param mailAddress　メールアドレス
+	 * @return メールアドレスが存在する場合true
 	 */
-	public void insert(Administrator administrator) {
-		administratorRepository.insert(administrator);
-	}
-
-	/**
-	 * ログインをします.
-	 * 
-	 * @param mailAddress メールアドレス
-	 * @param password    パスワード
-	 * @return 管理者情報 存在しない場合はnullが返ります
-	 */
-	public Administrator login(String mailAddress, String password) {
-		Administrator administrator = administratorRepository.findByMailAddressAndPassward(mailAddress, password);
-		return administrator;
-	}
+    public boolean isExistMailAddress(String mailAddress) {
+        if (administratorRepository.findByMailAddress(mailAddress) == null) {
+			return false;
+        }
+		return true;
+    }
 }
