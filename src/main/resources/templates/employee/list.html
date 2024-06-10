@@ -86,6 +86,10 @@
       <ol class="breadcrumb">
         <li class="active">
           <a href="list.html" th:href="@{/employee/showList}">従業員リスト</a>
+          <form th:action="@{/employee/showList}" method="get">
+            <input type="text" name="name" id="searchName" />
+            <button type="submit">検索</button>
+          </form>
         </li>
       </ol>
 
@@ -97,6 +101,14 @@
           <!-- ここから上を編集する必要はありません -->
 
           <!-- ここにモックのtable要素を貼り付けます -->
+
+          <div
+            th:if="${notFound}"
+            th:text="${notFound}"
+            class="alert alert-danger"
+          >
+            エラー
+          </div>
 
           <table class="table table-striped">
             <thead>

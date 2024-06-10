@@ -49,8 +49,19 @@ public class EmployeeController {
 	 * @return 従業員一覧画面
 	 */
 	@GetMapping("/showList")
-	public String showList(Model model) {
-		List<Employee> employeeList = employeeService.showList();
+	public String showList(Model model, String name) {
+		List<Employee> employeeList = employeeService.searchEmployees(name);
+		// ログイン画面からの遷移
+		if(name == null){
+			employeeList = employeeService.showList();
+		}
+		System.out.println(employeeList);
+		//　検索した文字列に一致する名前が存在しない場合(検索結果が0件の場合)
+		if(employeeList.isEmpty()){
+			employeeList = employeeService.showList();
+			model.addAttribute("notFound","1件も存在しませんでした");
+		}
+
 		model.addAttribute("employeeList", employeeList);
 		return "employee/list";
 	}
