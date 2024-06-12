@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 
 import com.example.domain.Employee;
 
+import javax.swing.*;
+
 /**
  * employeesテーブルを操作するリポジトリ.
  *
@@ -48,12 +50,14 @@ public class EmployeeRepository {
      *
      * @return 全従業員一覧 従業員が存在しない場合はサイズ0件の従業員一覧を返します
      */
-    public List<Employee> findAll() {
-        String sql = "SELECT id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count FROM employees ORDER BY hire_date";
+    public List<Employee> findAll(Integer offset) {
+        String sql = "SELECT id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count FROM employees ORDER BY hire_date LIMIT 10 OFFSET :offset";
 
-        List<Employee> developmentList = template.query(sql, EMPLOYEE_ROW_MAPPER);
+        SqlParameterSource param = new MapSqlParameterSource().addValue("offset",offset);
 
-        return developmentList;
+        List<Employee> employeeList = template.query(sql, param, EMPLOYEE_ROW_MAPPER);
+
+        return employeeList;
     }
 
     /**
@@ -89,10 +93,25 @@ public class EmployeeRepository {
      * @param name 検索する名前
      * @return 検索された従業員情報の一覧
      */
-    public List<Employee> findEmployeeByName(String name) {
+    public int findCountByName(String name) {
         String sql = "SELECT id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count FROM employees  WHERE name LIKE :name ORDER BY hire_date";
-
+        if(name == null){
+            name = "";
+        }
         SqlParameterSource param = new MapSqlParameterSource().addValue("name", "%" + name + "%");
+
+        List<Employee> employeeList = template.query(sql, param, EMPLOYEE_ROW_MAPPER);
+        System.out.println(employeeList);
+        return employeeList.size();
+    }
+
+    public List<Employee> findEmployeeByName(String name, Integer offset) {
+        if(name == null){
+            name = "";
+        }
+        String sql = "SELECT id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count FROM employees  WHERE name LIKE :name ORDER BY hire_date LIMIT 10 OFFSET :offset";
+
+        SqlParameterSource param = new MapSqlParameterSource().addValue("name", "%" + name + "%").addValue("offset",offset);
 
         List<Employee> employeeList = template.query(sql, param, EMPLOYEE_ROW_MAPPER);
 

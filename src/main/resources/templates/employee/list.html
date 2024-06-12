@@ -141,6 +141,14 @@
             </tbody>
           </table>
 
+          <span th:each="page : ${pageList}">
+            <a
+              th:href="@{'/employee/showList?page=' + ${page} + '&name=' + ${name}}"
+            >
+              <span th:text="${page}"></span>
+            </a>
+          </span>
+
           <!-- ここから下を編集する必要はありません -->
         </div>
       </div>

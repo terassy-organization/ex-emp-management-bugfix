@@ -1,5 +1,6 @@
 package com.example.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,12 @@ public class EmployeeService {
 	 * 
 	 * @return 従業員情報一覧
 	 */
-	public List<Employee> showList() {
-		List<Employee> employeeList = employeeRepository.findAll();
+	public List<Employee> showList(Integer page) {
+		Integer offset = 0;
+		if(page != null){
+			offset = (page - 1) * 10;
+		}
+		List<Employee> employeeList = employeeRepository.findAll(offset);
 		return employeeList;
 	}
 
@@ -59,8 +64,31 @@ public class EmployeeService {
 	 * @param name 検索する名前
 	 * @return 検索された従業員情報の一覧
 	 */
-	public List<Employee> searchEmployees(String name){
-		List<Employee> employeeList = employeeRepository.findEmployeeByName(name);
+	public List<Employee> searchEmployees(String name, Integer page){
+		Integer offset = 0;
+		if(page != null){
+			offset = (page - 1) * 10;
+		}
+
+		List<Employee> employeeList = employeeRepository.findEmployeeByName(name, offset);
 		return employeeList;
-	};
+	}
+
+	public List<Integer> pageCount(String name){
+		int pages = employeeRepository.findCountByName(name) / 10 + 1;
+
+//		if(name == null){
+//			pages =  employeeRepository.findAll().size() / 10 + 1;
+//		}else{
+//			pages = employeeRepository.findCountByName(name) / 10 + 1;
+//		}
+
+
+		List<Integer> pageList = new ArrayList<>();
+		for (int i = 1; i <= pages ; i++) {
+			pageList.add(i);
+		}
+
+		return pageList;
+	}
 }
